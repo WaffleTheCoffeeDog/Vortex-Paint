@@ -1,0 +1,339 @@
+html{
+  overflow: hidden;
+  transition: 1s;
+}
+
+* {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        position: relative;
+        overflow: hidden;
+        user-select: none;
+        background-color: #dddddd;
+      }
+
+      header {
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 100;
+        background-color: #bb00ff;
+        height: 100px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 5;
+      }
+
+      .toolbar {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 5%;
+        height: 100%;
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 5px;
+        transition: 1s;
+      }
+
+      .tool {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .tool:hover {
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .notool {
+        color:#bb00ff;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+        text-shadow: 0px 0px 5px #ffffff, 0px 0px 10px #ffffff,
+    0px 0px 15px #ffffff;
+      }
+
+      .notool:hover {
+        color:#bb00ff;
+        background: rgba(0, 0, 0, 0.5);
+        text-shadow: 0px 0px 5px #ffffff, 0px 0px 10px #ffffff,
+    0px 0px 15px #ffffff;
+      }
+
+      .material-symbols-outlined {
+        width: 60%;
+        height: auto;
+      }
+
+      .colors {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 5px;
+        width: 100%;
+        padding: 5px;
+        flex: 1;
+      }
+
+      .color {
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+        flex: 1;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .layerbar {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        position: fixed;
+        right: 0;
+        width: 20%;
+        height: 100%;
+        top: 0;
+        z-index: 2;
+        overflow-y: scroll;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: 1s;
+      }
+
+      .layer {
+        background: #ffffff;
+        backdrop-filter: blur(5px);
+        width: 80%;
+        margin-bottom: 5px;
+      }
+
+      #addlayer {
+        cursor: pointer;
+        font-size: 2rem;
+        margin-top: 20px;
+      }
+
+      #addlayertext {
+        font-size: 1.5rem;
+      }
+
+      .mainCanvas {
+        z-index: -1;
+      }
+
+      .mainCanvas,
+      .layercanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        cursor: crosshair;
+      }
+
+      .layercanvas {
+        position: relative;
+      }
+
+      #Canvas,
+      #TempCanvas,
+      #SaveCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      input[type="text"] {
+        width: 200px;
+        padding: 5px;
+        margin-right: 10px;
+      }
+
+      input[type="range"] {
+        margin: 10px;
+      }
+
+      #saveCanvas,
+      #tempCanvas,
+      #Canvas {
+        z-index: -100;
+      }
+
+      #saveCanvas {
+        display: none;
+      }
+
+      button {
+        background-color: #bb00ff;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        border-radius: 5px;
+        transition: 1s;
+        z-index: 100;
+      }
+
+      button:hover {
+        background-color: #a700e5;
+      }
+
+      ::-webkit-color-swatch {
+        border: none;
+      }
+
+      ::-moz-color-swatch {
+        border: none;
+      }
+
+      ::-webkit-color-swatch-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+
+.canvasContainer{
+  width:100vw;
+  height:100vh;
+  position:absolute;
+  top:0;
+  left:0;
+  overflow:hidden;
+}
+
+.canvas{
+  position:absolute;
+  cursor: none;
+}
+.paintCursor{
+  position: absolute;
+  background-color: transparent;
+  width: 10px;
+  height: 10px;
+  z-index: 9999999999;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 1px solid black;
+  pointer-events: none;
+}
+
+.previewCanvas{
+  width:100%;
+  background-color:#ffffff;
+  border-top-left-radius: 10%;
+  border-top-right-radius: 10%;
+}
+
+.previewContainer{
+  background-color:#555555aa;
+  position:relative;
+  width:85%;
+  margin-bottom:10px;
+  border-radius: 10%;
+}
+
+.backgroundCanvas{
+  position: absolute;
+  background-color:white;
+}
+
+.previewIcons{
+  padding-top: 10px;
+  width:20%;
+  padding-bottom:10px;
+  z-index:9999999;
+}
+.layerbar-btn{
+  top:0;
+  height:15%;
+  width:40px;
+  position:absolute;
+  padding:0;
+  margin:0;
+  right: 20%;
+  transform: translateY(50%);
+}
+
+.toolbar-btn{
+  top:0;
+  height:15%;
+  width:40px;
+  position:absolute;
+  padding:0;
+  margin:0;
+  left: 5%;
+  transform: translateY(50%);
+}
+
+#layerbarArrow{
+  transition:1s;
+}
+
+#toolbarArrow{
+  transition:1s;
+}
+
+.layerbarContainer{
+  height:150%
+}
+.toolbarContainer{
+  height:150%
+}
+.topbar{
+  position:absolute;
+  top:0;
+  left: 5%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  height: 6%;
+  transition: 1s;
+  
+}
+
+
+.pageText{
+  font-size:45;
+  height:1px;
+}
+
+.topThings{
+  position:absolute;
+  top:0;
+  z-index: 2;
+  height: 6%;
+  width:100%;
+}
+
+#tempCanvas{
+  z-index:1;
+  background-color:#00000000;
+}
