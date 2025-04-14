@@ -45,7 +45,7 @@ function newLayer() {
 	layers["layer" + totalLayers]["bitMap"] = document.createElement('canvas');
   layers["layer" + totalLayers]["bitMap"].id = "me"+totalLayers;
   layers["layer" + totalLayers]["bitMap"].classList.add("canvas");
-  document.body.appendChild(layers["layer" + totalLayers]["bitMap"]);
+  document.getElementById("canvasContainer").appendChild(layers["layer" + totalLayers]["bitMap"]);
   
   layers["layer" + totalLayers]["vector"] = document.createElement('canvas');
   layers["layer" + totalLayers]["vector"].id = "vectorL"+totalLayers;
@@ -70,24 +70,39 @@ function newLayer() {
   layers["layer" + totalLayers]["previewDuplicate"].id = "previewDuplicate"+totalLayers;
   layers["layer" + totalLayers]["previewDuplicate"].classList.add("material-symbols-outlined", "previewIcons");
   layers["layer" + totalLayers]["previewDuplicate"].textContent = "library_add";
-  layers["layer" + totalLayers]["previewDuplicate"].onclick = function() {duplicateLayer(this.id.slice(16)); attemptLayerChange(parseInt((this.id.slice(16))) + 1); console.log(this.id.slice(16)); }
+  layers["layer" + totalLayers]["previewDuplicate"].onclick = function() {duplicateLayer(this.id.slice(16)); attemptLayerChange(document.getElementsByClassName("previewContainer").length-1); }
   
   layers["layer" + totalLayers]["previewDelete"] = document.createElement('span');
   layers["layer" + totalLayers]["previewDelete"].id = "previewDelete"+totalLayers;
   layers["layer" + totalLayers]["previewDelete"].classList.add("material-symbols-outlined", "previewIcons");
   layers["layer" + totalLayers]["previewDelete"].textContent = "delete";
   layers["layer" + totalLayers]["previewDelete"].onclick = function(){deleteLayer(this.id.slice(13));}
+
+  layers["layer" + totalLayers]["previewDown"] = document.createElement('span');
+  layers["layer" + totalLayers]["previewDown"].id = "previewUp"+totalLayers;
+  layers["layer" + totalLayers]["previewDown"].classList.add("material-symbols-outlined", "previewIcons", "previewSmol");
+  layers["layer" + totalLayers]["previewDown"].textContent = "keyboard_arrow_down";
+  layers["layer" + totalLayers]["previewDown"].onclick = function(){moveDown(this.id.slice(9));}
+  
+  layers["layer" + totalLayers]["previewUp"] = document.createElement('span');
+  layers["layer" + totalLayers]["previewUp"].id = "previewDown"+totalLayers;
+  layers["layer" + totalLayers]["previewUp"].classList.add("material-symbols-outlined", "previewIcons", "previewSmol");
+  layers["layer" + totalLayers]["previewUp"].textContent = "keyboard_arrow_up";
+  layers["layer" + totalLayers]["previewUp"].onclick = function(){moveUp(this.id.slice(11))}
   
   layers["layer" + totalLayers]["previewContainer"] = document.createElement('span');
   layers["layer" + totalLayers]["previewContainer"].id = "previewContainerId"+totalLayers;
   layers["layer" + totalLayers]["previewContainer"].classList.add("previewContainer");
+  //layers["layer" + totalLayers]["previewContainer"].draggable = true;
   layers["layer" + totalLayers]["previewContainer"].onmousedown = function() {attemptLayerChange(this.id.slice(18))}
   
-  document.getElementById("layerbar").appendChild(layers["layer" + totalLayers]["previewContainer"]);
+  document.getElementById("previewContainerButActuallyRealThisTimeIPromise").prepend(layers["layer" + totalLayers]["previewContainer"]);
   layers["layer" + totalLayers]["previewContainer"].appendChild(layers["layer" + totalLayers]["preview"]);
   layers["layer" + totalLayers]["previewContainer"].appendChild(layers["layer" + totalLayers]["previewHide"]);
   layers["layer" + totalLayers]["previewContainer"].appendChild(layers["layer" + totalLayers]["previewDelete"]);
   layers["layer" + totalLayers]["previewContainer"].appendChild(layers["layer" + totalLayers]["previewDuplicate"]);
+  layers["layer" + totalLayers]["previewContainer"].appendChild(layers["layer" + totalLayers]["previewDown"]);
+  layers["layer" + totalLayers]["previewContainer"].appendChild(layers["layer" + totalLayers]["previewUp"]);
   
   
   current = totalLayers;
@@ -164,7 +179,6 @@ document.getElementById("me"+current).getContext("2d").drawImage(document.getEle
 }
 
 function attemptLayerChange(layerName) {
-  console.log(layerName)
   if (layers["layer" + layerName]["previewHide"].textContent != "visibility_off") {
   current = layerName;
   layerChange();
@@ -270,9 +284,6 @@ function logKey(e) {
     ctrDown = true;
   }
   
-  if (e.code === "KeyQ") {
-    alert(document.getElementById("me0").style.left+"   "+document.getElementById("me0").style.top+"  window:  "+window.innerWidth+"   "+window.innerHeight)
-  }
   console.log(lastKeyPressed);
 }
 
@@ -358,7 +369,7 @@ function onMouseMove(e) {
 });       
     }
     
-    //checked /\
+
     ctx["me"+current].beginPath();
     ctx["me"+current].moveTo((OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
     ctx["me"+current].lineTo( (mouseX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (mouseY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
@@ -378,7 +389,7 @@ function onMouseMove(e) {
         tctx.strokeStyle = color;
         tctx.lineCap = "round";
         tctx.clearRect(0,0,temp.width,temp.height);
-        tctx.moveTo( (veryOMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (veryOMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
+        tctx.moveTo( (OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
         tctx.lineTo( (mouseX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (mouseY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
         tctx.stroke();
         tctx.beginPath();
@@ -387,8 +398,40 @@ function onMouseMove(e) {
         
         if (!LMB && lineToggle) {ctx["me"+current].lineWidth = strokeSize;
         ctx["me"+current].beginPath();
-        ctx["me"+current].moveTo( (veryOMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (veryOMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
+        ctx["me"+current].moveTo( (OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
         ctx["me"+current].lineTo( (mouseX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (mouseY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
+        ctx["me"+current].stroke();
+        lineToggle = false;}
+        
+        if(!LMB){
+          temp.style.display = "none"
+        }
+        
+        
+        
+});   
+    }
+    
+    if (mode == "circle") {
+      Object.values(layers).forEach((layer) => {
+        if (document.getElementById(layer.bitMap.id) != null) {ctx[layer.bitMap.id].globalCompositeOperation = "source-over" }
+        if (LMB){
+          temp.style.display = "block";
+        tctx.lineWidth = strokeSize;
+        tctx.strokeStyle = color;
+        tctx.lineCap = "round";
+        tctx.clearRect(0,0,temp.width,temp.height);
+        tctx.moveTo( (OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
+        tctx.beginPath();
+        tctx.arc( (OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)), Math.sqrt(Math.pow(OMX - mouseX, 2) + Math.pow(OMY - mouseY, 2))/zoom*250,0,360);
+        tctx.stroke();
+        lineToggle = true;
+        }
+        
+        if (!LMB && lineToggle) {ctx["me"+current].lineWidth = strokeSize;
+        ctx["me"+current].moveTo( (OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)));
+        ctx["me"+current].beginPath();
+        ctx["me"+current].arc( (OMX - canvas.getBoundingClientRect().left) / parseFloat(canvas.style.transform.slice(6, -1)), (OMY - canvas.getBoundingClientRect().top) / parseFloat(canvas.style.transform.slice(6, -1)), Math.sqrt(Math.pow(OMX - mouseX, 2) + Math.pow(OMY - mouseY, 2))/zoom*250,0,360);
         ctx["me"+current].stroke();
         lineToggle = false;}
         
@@ -460,7 +503,50 @@ function imageData () {
   Object.values(layers).forEach((layer) => {
     saveCanvas.getContext('2d').drawImage(document.getElementById(layer.bitMap.id), 0, 0)
   });
-  console.log(saveCanvas.getContext('2d').createImageData(saveCanvas.width,saveCanvas.height).data)
+  console.log(saveCanvas.toDataURL())
+  navigator.clipboard.writeText(saveCanvas.toDataURL());
+
+}
+
+function moveUp (ts) {
+  
+  var arr = [...Array(Object.keys(layers).length).keys()];
+  var wrapper = document.getElementsByClassName("previewContainerButActuallyRealThisTimeIPromise");
+  var wrapper2 = document.getElementsByClassName("canvasContainer");
+  var items = Array.from(wrapper[0].children);
+  var items2 = Array.from(wrapper2[0].children);
+  var the = Array.from(document.getElementById("previewContainerButActuallyRealThisTimeIPromise").children);
+
+  Object.values(layers).forEach((layer) => {
+  if (the[layer.bitMap.id.slice(2)].id.slice(18) == ts) {console.log(arr[layer.bitMap.id.slice(2)]); arr[layer.bitMap.id.slice(2)] = parseInt(arr[layer.bitMap.id.slice(2)])-1; arr[parseInt(layer.bitMap.id.slice(2))-1] = parseInt(arr[parseInt(layer.bitMap.id.slice(2))-1])+1; console.log(arr);} 
+  });
+  
+  arr.forEach(function(idx) {
+      wrapper[0].appendChild(items[idx]);
+      wrapper2[0].appendChild(items2[idx]);
+  });
+
+
+}
+function moveDown (pmo) {
+  
+  var arr = [...Array(Object.keys(layers).length).keys()];
+  var wrapper = document.getElementsByClassName("previewContainerButActuallyRealThisTimeIPromise");
+  var wrapper2 = document.getElementsByClassName("canvasContainer");
+  var items = Array.from(wrapper[0].children);
+  var items2 = Array.from(wrapper2[0].children);
+  var the = Array.from(document.getElementById("previewContainerButActuallyRealThisTimeIPromise").children);
+
+  Object.values(layers).forEach((layer) => {
+  if (the[layer.bitMap.id.slice(2)].id.slice(18) == pmo) {console.log(arr[layer.bitMap.id.slice(2)]); arr[layer.bitMap.id.slice(2)] = parseInt(arr[layer.bitMap.id.slice(2)])+1; arr[parseInt(layer.bitMap.id.slice(2))+1] = parseInt(arr[parseInt(layer.bitMap.id.slice(2))+1])-1; console.log(arr);} 
+  });
+  
+  arr.forEach(function(idx) {
+      wrapper[0].appendChild(items[idx]);
+      wrapper2[0].appendChild(items2[idx]);
+  });
+
+
 }
 
 document.getElementById("myRange").oninput = function () {
