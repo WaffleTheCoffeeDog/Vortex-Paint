@@ -41,11 +41,33 @@ slideshow
         >
       </div>
       
-      <div class="notool">
+      
+      
+      
+      <div class="tool" onclick="mode = 'circle';">
         <span class="material-symbols-outlined" 
-          >block</span
+          >circle</span
+        >
+      </div><!--
+      <div class="tool" onclick="mode = 'rectangle';">
+        <span class="material-symbols-outlined"
+          >rectangle</span
         >
       </div>
+      <div class="tool" onclick="mode = 'triangle';">
+        <span class="material-symbols-outlined"
+          >change_history</span
+        >
+      </div>
+      <div class="tool" onclick="mode = 'arc';">
+        <span class="material-symbols-outlined"
+          >line_curve</span
+        >
+      </div>
+      <div class="tool" onclick="mode = 'circle';">
+        <span class="material-symbols-outlined">add_circle</span>
+      </div> <!-->
+      
       <div class="notool">
         <span class="material-symbols-outlined"
           >block</span
@@ -65,30 +87,6 @@ slideshow
         <span class="material-symbols-outlined">block</span>
       </div> 
       
-      <!--
-      <div class="tool" onclick="mode = 'circle';">
-        <span class="material-symbols-outlined" 
-          >circle</span
-        >
-      </div>
-      <div class="tool" onclick="mode = 'rectangle';">
-        <span class="material-symbols-outlined"
-          >rectangle</span
-        >
-      </div>
-      <div class="tool" onclick="mode = 'triangle';">
-        <span class="material-symbols-outlined"
-          >change_history</span
-        >
-      </div>
-      <div class="tool" onclick="mode = 'arc';">
-        <span class="material-symbols-outlined"
-          >line_curve</span
-        >
-      </div>
-      <div class="tool" onclick="mode = 'circle';">
-        <span class="material-symbols-outlined">add_circle</span>
-      </div> <!-->
       <div class="colors">
         <input type="color" class="color" id="colorRange" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
         <input type="color" class="color" id="colorRange2" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
@@ -109,6 +107,7 @@ slideshow
 slideshow
 </span>
     </button>
+  <center>
     <div class="layerbar" id="layerbar">
       <center>
         <span
@@ -120,7 +119,9 @@ slideshow
         <br /><br />
       </center>
       <br /><br />
+      <div id="previewContainerButActuallyRealThisTimeIPromise" class="previewContainerButActuallyRealThisTimeIPromise"></div>
     </div>
+    </center>
   </div>
     
     <div class="topbar" id="topbar">
@@ -135,7 +136,7 @@ slideshow
         <input type="text" maxlength="30" id="pictureName" />
         <button onclick="downloadCanvas()">Save</button>
         <button onclick="clearDraw()">Clear Layer</button>
-       <!-- <button onclick="imageData()">Fetch Image Data</button> !-->
+       <button onclick="imageData()">Fetch Image Data</button>
         <input
           type="range"
           min="1"
@@ -149,6 +150,7 @@ slideshow
     </div>
       </span>
     </div>
+    <span id="canvasContainer" class="canvasContainer"></span>
   </body>
 <script src="scripts.js"></script>
 <link rel="stylesheet" href="style.css">
