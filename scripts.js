@@ -45,12 +45,12 @@ function newLayer() {
 	layers["layer" + totalLayers]["bitMap"] = document.createElement('canvas');
   layers["layer" + totalLayers]["bitMap"].id = "me"+totalLayers;
   layers["layer" + totalLayers]["bitMap"].classList.add("canvas");
-  document.getElementById("canvasContainer").appendChild(layers["layer" + totalLayers]["bitMap"]);
+  document.getElementById("canvasContainer").prepend(layers["layer" + totalLayers]["bitMap"]);
   
   layers["layer" + totalLayers]["vector"] = document.createElement('canvas');
   layers["layer" + totalLayers]["vector"].id = "vectorL"+totalLayers;
   layers["layer" + totalLayers]["vector"].classList.add("canvas");
-  document.body.appendChild(layers["layer" + totalLayers]["vector"]);
+  document.body.prepend(layers["layer" + totalLayers]["vector"]);
   
 	layers["layer" + totalLayers]["preview"] = document.createElement('canvas');
   layers["layer" + totalLayers]["preview"].id = "previewId"+totalLayers;
@@ -79,16 +79,16 @@ function newLayer() {
   layers["layer" + totalLayers]["previewDelete"].onclick = function(){deleteLayer(this.id.slice(13));}
 
   layers["layer" + totalLayers]["previewDown"] = document.createElement('span');
-  layers["layer" + totalLayers]["previewDown"].id = "previewUp"+totalLayers;
+  layers["layer" + totalLayers]["previewDown"].id = "previewDown"+totalLayers;
   layers["layer" + totalLayers]["previewDown"].classList.add("material-symbols-outlined", "previewIcons", "previewSmol");
   layers["layer" + totalLayers]["previewDown"].textContent = "keyboard_arrow_down";
-  layers["layer" + totalLayers]["previewDown"].onclick = function(){moveDown(this.id.slice(9));}
+  layers["layer" + totalLayers]["previewDown"].onclick = function(){moveDown(this.id.slice(11));}
   
   layers["layer" + totalLayers]["previewUp"] = document.createElement('span');
-  layers["layer" + totalLayers]["previewUp"].id = "previewDown"+totalLayers;
+  layers["layer" + totalLayers]["previewUp"].id = "previewUp"+totalLayers;
   layers["layer" + totalLayers]["previewUp"].classList.add("material-symbols-outlined", "previewIcons", "previewSmol");
   layers["layer" + totalLayers]["previewUp"].textContent = "keyboard_arrow_up";
-  layers["layer" + totalLayers]["previewUp"].onclick = function(){moveUp(this.id.slice(11))}
+  layers["layer" + totalLayers]["previewUp"].onclick = function(){moveUp(this.id.slice(9))}
   
   layers["layer" + totalLayers]["previewContainer"] = document.createElement('span');
   layers["layer" + totalLayers]["previewContainer"].id = "previewContainerId"+totalLayers;
@@ -206,7 +206,7 @@ function initializeCanvas() {
   
   }); 
  document.getElementById("previewId"+current).height = canvasHeightS/canvasWidthS*document.getElementById("previewId"+current).width
-
+for (let i = 0; i < 1000; i++) {moveDown(totalLayers)}
   
 }
 
@@ -509,7 +509,7 @@ function imageData () {
 }
 
 function moveUp (ts) {
-  
+
   var arr = [...Array(Object.keys(layers).length).keys()];
   var wrapper = document.getElementsByClassName("previewContainerButActuallyRealThisTimeIPromise");
   var wrapper2 = document.getElementsByClassName("canvasContainer");
@@ -518,18 +518,24 @@ function moveUp (ts) {
   var the = Array.from(document.getElementById("previewContainerButActuallyRealThisTimeIPromise").children);
 
   Object.values(layers).forEach((layer) => {
-  if (the[layer.bitMap.id.slice(2)].id.slice(18) == ts) {console.log(arr[layer.bitMap.id.slice(2)]); arr[layer.bitMap.id.slice(2)] = parseInt(arr[layer.bitMap.id.slice(2)])-1; arr[parseInt(layer.bitMap.id.slice(2))-1] = parseInt(arr[parseInt(layer.bitMap.id.slice(2))-1])+1; console.log(arr);} 
+  if (the[layer.preview.id.slice(9)].id.slice(18) == ts) {console.log(arr[layer.preview.id.slice(9)]); arr[layer.preview.id.slice(9)] = parseInt(arr[layer.preview.id.slice(9)])+1; arr[parseInt(layer.preview.id.slice(9))+1] = parseInt(arr[parseInt(layer.preview.id.slice(9))+1])-1; console.log(arr);} 
   });
   
   arr.forEach(function(idx) {
       wrapper[0].appendChild(items[idx]);
-      wrapper2[0].appendChild(items2[idx]);
   });
-
-
+  
+  arr.reverse().forEach(function(idx) {
+      console.log(arr)
+      wrapper2[0].prepend(items2[idx]);
+  });
+  
+  arr.reverse()
+  
 }
+
 function moveDown (pmo) {
-  
+
   var arr = [...Array(Object.keys(layers).length).keys()];
   var wrapper = document.getElementsByClassName("previewContainerButActuallyRealThisTimeIPromise");
   var wrapper2 = document.getElementsByClassName("canvasContainer");
@@ -538,15 +544,20 @@ function moveDown (pmo) {
   var the = Array.from(document.getElementById("previewContainerButActuallyRealThisTimeIPromise").children);
 
   Object.values(layers).forEach((layer) => {
-  if (the[layer.bitMap.id.slice(2)].id.slice(18) == pmo) {console.log(arr[layer.bitMap.id.slice(2)]); arr[layer.bitMap.id.slice(2)] = parseInt(arr[layer.bitMap.id.slice(2)])+1; arr[parseInt(layer.bitMap.id.slice(2))+1] = parseInt(arr[parseInt(layer.bitMap.id.slice(2))+1])-1; console.log(arr);} 
+  if (the[layer.preview.id.slice(9)].id.slice(18) == pmo) {console.log(arr[layer.preview.id.slice(9)]); arr[layer.preview.id.slice(9)] = parseInt(arr[layer.preview.id.slice(9)])-1; arr[parseInt(layer.preview.id.slice(9))-1] = parseInt(arr[parseInt(layer.preview.id.slice(9))-1])+1; console.log(arr);} 
   });
   
   arr.forEach(function(idx) {
       wrapper[0].appendChild(items[idx]);
-      wrapper2[0].appendChild(items2[idx]);
   });
-
-
+  
+  arr.reverse().forEach(function(idx) {
+      console.log(arr)
+      wrapper2[0].prepend(items2[idx]);
+  });
+  
+  arr.reverse()
+  
 }
 
 document.getElementById("myRange").oninput = function () {
