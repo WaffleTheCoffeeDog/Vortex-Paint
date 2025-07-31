@@ -1,7 +1,7 @@
 <html onwheel="myFunction(event); console.log('scroll')">
   <title>Vortex - Paint</title>
   <head>
-    <link rel="stylesheet" href="https://vortexos.onrender.com/style.css">
+    <link rel="stylesheet" href="https://vortexos.onrender.com/style.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
@@ -9,46 +9,35 @@
   </head>
   <div id="paintCursor" class="paintCursor"></div>
   <body>
-      
-      <canvas id="SaveCanvas"></canvas>
+    <canvas id="SaveCanvas"></canvas>
     <canvas id="backgroundCanvas" class="backgroundCanvas"></canvas>
     <canvas id="tempCanvas" class="backgroundCanvas"></canvas>
-<div class="toolbarContainer" id="toolbarContainer">
-  <button
-      class="floating-btn, toolbar-btn"
-      id="toggle-toolbar-btn"
-      onclick="toggleSidebar('toolbar')"
-    >
-      <span class="material-symbols-outlined" id="toolbarArrow">
-slideshow
-</span>
-    </button>
-  
-    <div class="toolbar" id="toolbar">
-      <div class="tool" onclick="mode = 'draw';">
-        <span class="material-symbols-outlined"
-          >ink_marker</span
-        >
-      </div>
-      <div class="tool" onclick="mode = 'erase';">
-        <span class="material-symbols-outlined" 
-          >ink_eraser</span
-        >
-      </div>
-      <div class="tool" onclick="mode = 'line';">
-        <span class="material-symbols-outlined" 
-          >timeline</span
-        >
-      </div>
-      
-      
-      
-      
-      <div class="tool" onclick="mode = 'circle';">
-        <span class="material-symbols-outlined" 
-          >circle</span
-        >
-      </div><!--
+    <div class="toolbarContainer" id="toolbarContainer">
+      <button
+        class="floating-btn, toolbar-btn"
+        id="toggle-toolbar-btn"
+        onclick="toggleSidebar('toolbar')"
+      >
+        <span class="material-symbols-outlined" id="toolbarArrow">
+          slideshow
+        </span>
+      </button>
+
+      <div class="toolbar" id="toolbar">
+        <div class="tool" onclick="mode = 'draw';">
+          <span class="material-symbols-outlined">ink_marker</span>
+        </div>
+        <div class="tool" onclick="mode = 'erase';">
+          <span class="material-symbols-outlined">ink_eraser</span>
+        </div>
+        <div class="tool" onclick="mode = 'line';">
+          <span class="material-symbols-outlined">timeline</span>
+        </div>
+
+        <div class="tool" onclick="mode = 'circle';">
+          <span class="material-symbols-outlined">circle</span>
+        </div>
+        
       <div class="tool" onclick="mode = 'rectangle';">
         <span class="material-symbols-outlined"
           >rectangle</span
@@ -64,94 +53,113 @@ slideshow
           >line_curve</span
         >
       </div>
-      <div class="tool" onclick="mode = 'circle';">
-        <span class="material-symbols-outlined">add_circle</span>
-      </div> <!-->
-      
-      <div class="notool">
-        <span class="material-symbols-outlined"
-          >block</span
-        >
-      </div>
-      <div class="notool">
-        <span class="material-symbols-outlined"
-          >block</span
-        >
-      </div>
-      <div class="notool" >
-        <span class="material-symbols-outlined"
-          >block</span
-        >
-      </div>
-      <div class="notool" >
-        <span class="material-symbols-outlined">block</span>
-      </div> 
-      
-      <div class="colors">
-        <input type="color" class="color" id="colorRange" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
-        <input type="color" class="color" id="colorRange2" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
-        <input type="color" class="color" id="colorRange3" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
-        <input type="color" class="color" id="colorRange4" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
-        <input type="color" class="color" id="colorRange5" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
-        <input type="color" class="color" id="colorRange6" oninput="changeColor(this.value)" onclick="changeColor(this.value)"/>
+
+        <div class="notool">
+          <span class="material-symbols-outlined">block</span>
+        </div>
+
+        <div class="colors">
+          <input
+            type="color"
+            class="color"
+            id="colorRange"
+            oninput="changeColor(this.value)"
+            onclick="changeColor(this.value)"
+          />
+          <input
+            type="color"
+            class="color"
+            id="colorRange2"
+            oninput="changeColor(this.value)"
+            onclick="changeColor(this.value)"
+          />
+          <input
+            type="color"
+            class="color"
+            id="colorRange3"
+            oninput="changeColor(this.value)"
+            onclick="changeColor(this.value)"
+          />
+          <input
+            type="color"
+            class="color"
+            id="colorRange4"
+            oninput="changeColor(this.value)"
+            onclick="changeColor(this.value)"
+          />
+          <input
+            type="color"
+            class="color"
+            id="colorRange5"
+            oninput="changeColor(this.value)"
+            onclick="changeColor(this.value)"
+          />
+          <input
+            type="color"
+            class="color"
+            id="colorRange6"
+            oninput="changeColor(this.value)"
+            onclick="changeColor(this.value)"
+          />
+        </div>
       </div>
     </div>
-    </div>
-<div class="layerbarContainer" id="layerbarContainer">
-  <button
-      class="floating-btn, layerbar-btn"
-      id="toggle-layerbar-btn"
-      onclick="toggleSidebar('layerbar')"
-    >
-      <span class="material-symbols-outlined" id="layerbarArrow">
-slideshow
-</span>
-    </button>
-  <center>
-    <div class="layerbar" id="layerbar">
+    <div class="layerbarContainer" id="layerbarContainer">
+      <button
+        class="floating-btn, layerbar-btn"
+        id="toggle-layerbar-btn"
+        onclick="toggleSidebar('layerbar')"
+      >
+        <span class="material-symbols-outlined" id="layerbarArrow">
+          slideshow
+        </span>
+      </button>
       <center>
-        <span
-          class="material-symbols-outlined"
-          id="addlayer"
-          onclick="newLayer()"
-          >add_box</span
-        >
-        <br /><br />
+        <div class="layerbar" id="layerbar">
+          <center>
+            <span
+              class="material-symbols-outlined"
+              id="addlayer"
+              onclick="newLayer()"
+              >add_box</span
+            >
+            <br /><br />
+          </center>
+          <br /><br />
+          <div
+            id="previewContainerButActuallyRealThisTimeIPromise"
+            class="previewContainerButActuallyRealThisTimeIPromise"
+          ></div>
+        </div>
       </center>
-      <br /><br />
-      <div id="previewContainerButActuallyRealThisTimeIPromise" class="previewContainerButActuallyRealThisTimeIPromise"></div>
     </div>
-    </center>
-  </div>
-    
+
     <div class="topbar" id="topbar">
       <span id="topbarspan">
-            <div class="topThings">
-      <h1>
-      <center>
-        <p class="pageText">
-          Vortex Paint [1.1.0 - Canvas Control UPD]
-        </p>
-        <br />
-        <input type="text" maxlength="30" id="pictureName" />
-        <button onclick="downloadCanvas()">Save</button>
-        <button onclick="clearDraw()">Clear Layer</button>
-       <button onclick="imageData()">Fetch Image Data</button>
-        <input
-          type="range"
-          min="1"
-          max="150"
-          value="1"
-          class="slider"
-          id="myRange"
-        />
-      </center>
-    </h1>
-    </div>
+        <div class="topThings">
+          <h1>
+            <center>
+              <p class="pageText">Vortex Paint [1.1.0 - Canvas Control UPD]</p>
+              <br />
+              <input type="text" maxlength="30" id="pictureName" />
+              <button onclick="downloadCanvas()">Save</button>
+              <button onclick="clearDraw()">Clear Layer</button>
+              <button onclick="imageData()">Fetch Image Data</button>
+              <input
+                type="range"
+                min="1"
+                max="150"
+                value="1"
+                class="slider"
+                id="myRange"
+              />
+            </center>
+          </h1>
+        </div>
       </span>
     </div>
     <span id="canvasContainer" class="canvasContainer"></span>
   </body>
-<script src="scripts.js"></script>
-<link rel="stylesheet" href="style.css">
+  <script src="scripts.js"></script>
+  <link rel="stylesheet" href="style.css" />
 </html>
