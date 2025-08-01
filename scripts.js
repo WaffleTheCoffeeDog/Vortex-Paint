@@ -36,6 +36,10 @@ var veryOMX;
 var veryOMY;
 var color = "#000000";
 var saveCanvas = document.getElementById("SaveCanvas");
+var undoStack = [];
+var undoStackIndex = 0;
+var redoStack = [];
+var redoStackIndex = 0;
 
 //layer system
 function newLayer() {
@@ -372,7 +376,26 @@ function logKey(e) {
   if (e.code === "ControlLeft" || e.code === "ControlRight") {
     ctrDown = true;
   }
-
+  if (e.code === "KeyZ") {
+    if (undoStackIndex > 0) {
+      undoStackIndex--;
+      ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
+      if (undoStack[undoStackIndex]) {
+        redoStack.push(undoStack.splice(undoStackIndex + 1)[0]);
+        ctx["me" + current].putImageData(undoStack[undoStackIndex], 0, 0);
+      }
+    }
+  }
+  
+  if (e.code === "KeyY") {
+    if (redoStack.length > 0) {
+      ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
+      const redoAction = redoStack.pop();
+      undoStack.splice(undoStackIndex + 1, 0, redoAction);
+      undoStackIndex++;
+      ctx["me" + current].putImageData(redoAction, 0, 0);
+    }
+  }
   console.log(lastKeyPressed);
 }
 
@@ -507,6 +530,11 @@ function onMouseUp() {
   RMB = false;
   LMB = false;
   clickToggle = false;
+
+  undoStackIndex++;
+  undoStack.push(layers["layer" + current].bitMap.getContext('2d').getImageData(0, 0, canvas.width, canvas.height));
+  redoStack = [];
+  redoStackIndex = 0;
 }
 
 function drawFunct(e) {
@@ -1087,3 +1115,4 @@ document.getElementById("me0").style.left = bgCanvas.style.left;
 document.getElementById("me0").style.top = 0;
 document.getElementById("tempCanvas").style.left = bgCanvas.style.left;
 document.getElementById("tempCanvas").style.top = 0;
+undoStack.push(layers["layer" + current].bitMap.getContext('2d').getImageData(0, 0, canvas.width, canvas.height));
