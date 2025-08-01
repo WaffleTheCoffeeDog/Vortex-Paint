@@ -386,7 +386,7 @@ function logKey(e) {
       }
     }
   }
-  
+
   if (e.code === "KeyY") {
     if (redoStack.length > 0) {
       ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
@@ -406,30 +406,32 @@ function onKeyUp() {
 
 // canvas handling
 function myFunction(event) {
-  if (
-    layerbarToggle == 1 ||
-    mouseX <
-      window.innerWidth -
-        document.getElementById("layerbar").getBoundingClientRect().width
-  ) {
-    var scrollEvent = invertScroll ? -event.deltaY : event.deltaY;
+  if (document.getElementById("settings").style.display == "none") {
+    if (
+      layerbarToggle == 1 ||
+      mouseX <
+        window.innerWidth -
+          document.getElementById("layerbar").getBoundingClientRect().width
+    ) {
+      var scrollEvent = invertScroll ? -event.deltaY : event.deltaY;
 
-    zoom = Math.max(10, Math.min(zoom + scrollEvent / 4, 1000));
-    console.log(zoom);
+      zoom = Math.max(10, Math.min(zoom + scrollEvent / 4, 1000));
+      console.log(zoom);
 
-    Object.values(layers).forEach((layer) => {
-      if (document.getElementById(layer.bitMap.id) != null) {
-        document.getElementById(layer.bitMap.id).style.transform = `scale(${
-          zoom / 250
-        })`;
-        bgCanvas.style.transform = `scale(${zoom / 250})`;
-        temp.style.transform = `scale(${zoom / 250})`;
-      }
-    });
+      Object.values(layers).forEach((layer) => {
+        if (document.getElementById(layer.bitMap.id) != null) {
+          document.getElementById(layer.bitMap.id).style.transform = `scale(${
+            zoom / 250
+          })`;
+          bgCanvas.style.transform = `scale(${zoom / 250})`;
+          temp.style.transform = `scale(${zoom / 250})`;
+        }
+      });
 
-    paintCursor.style.transform = `translate(${mouseX - 5}px, ${
-      mouseY - 5
-    }px) scale(${((strokeSize / 15) * zoom) / 100})`;
+      paintCursor.style.transform = `translate(${mouseX - 5}px, ${
+        mouseY - 5
+      }px) scale(${((strokeSize / 15) * zoom) / 100})`;
+    }
   }
 }
 var lineToggle;
@@ -476,13 +478,17 @@ function onMouseDown(e) {
         ctx["me" + current].beginPath();
         ctx["me" + current].moveTo(window.arcStartX, window.arcStartY);
         ctx["me" + current].quadraticCurveTo(
-          ((mouseX - canvas.getBoundingClientRect().left) /
-            parseFloat(canvas.style.transform.slice(6, -1))) - ((window.arcStartX+window.arcSecondX)/2) + ((mouseX - canvas.getBoundingClientRect().left) /
-            parseFloat(canvas.style.transform.slice(6, -1))),
+          (mouseX - canvas.getBoundingClientRect().left) /
+            parseFloat(canvas.style.transform.slice(6, -1)) -
+            (window.arcStartX + window.arcSecondX) / 2 +
+            (mouseX - canvas.getBoundingClientRect().left) /
+              parseFloat(canvas.style.transform.slice(6, -1)),
 
-          ((mouseY - canvas.getBoundingClientRect().top) /
-            parseFloat(canvas.style.transform.slice(6, -1))) - ((window.arcStartY+window.arcSecondY)/2) + ((mouseY - canvas.getBoundingClientRect().top) /
-            parseFloat(canvas.style.transform.slice(6, -1))), 
+          (mouseY - canvas.getBoundingClientRect().top) /
+            parseFloat(canvas.style.transform.slice(6, -1)) -
+            (window.arcStartY + window.arcSecondY) / 2 +
+            (mouseY - canvas.getBoundingClientRect().top) /
+              parseFloat(canvas.style.transform.slice(6, -1)),
           window.arcSecondX,
           window.arcSecondY
         );
@@ -527,14 +533,19 @@ function onMouseDown(e) {
 }
 
 function onMouseUp() {
+if (LMB){
+  undoStackIndex++;
+  undoStack.push(
+    layers["layer" + current].bitMap
+      .getContext("2d")
+      .getImageData(0, 0, canvas.width, canvas.height)
+  );
+  redoStack = [];
+  redoStackIndex = 0;}
+
   RMB = false;
   LMB = false;
   clickToggle = false;
-
-  undoStackIndex++;
-  undoStack.push(layers["layer" + current].bitMap.getContext('2d').getImageData(0, 0, canvas.width, canvas.height));
-  redoStack = [];
-  redoStackIndex = 0;
 }
 
 function drawFunct(e) {
@@ -879,19 +890,23 @@ function drawFunct(e) {
 
           if (window.arcSecondX) {
             tctx.beginPath();
-        tctx.moveTo(window.arcStartX, window.arcStartY);
-        tctx.quadraticCurveTo(
-          ((mouseX - canvas.getBoundingClientRect().left) /
-            parseFloat(canvas.style.transform.slice(6, -1))) - ((window.arcStartX+window.arcSecondX)/2) + ((mouseX - canvas.getBoundingClientRect().left) /
-            parseFloat(canvas.style.transform.slice(6, -1))),
+            tctx.moveTo(window.arcStartX, window.arcStartY);
+            tctx.quadraticCurveTo(
+              (mouseX - canvas.getBoundingClientRect().left) /
+                parseFloat(canvas.style.transform.slice(6, -1)) -
+                (window.arcStartX + window.arcSecondX) / 2 +
+                (mouseX - canvas.getBoundingClientRect().left) /
+                  parseFloat(canvas.style.transform.slice(6, -1)),
 
-          ((mouseY - canvas.getBoundingClientRect().top) /
-            parseFloat(canvas.style.transform.slice(6, -1))) - ((window.arcStartY+window.arcSecondY)/2) + ((mouseY - canvas.getBoundingClientRect().top) /
-            parseFloat(canvas.style.transform.slice(6, -1))), 
-          window.arcSecondX,
-          window.arcSecondY
-        );
-        tctx.stroke();
+              (mouseY - canvas.getBoundingClientRect().top) /
+                parseFloat(canvas.style.transform.slice(6, -1)) -
+                (window.arcStartY + window.arcSecondY) / 2 +
+                (mouseY - canvas.getBoundingClientRect().top) /
+                  parseFloat(canvas.style.transform.slice(6, -1)),
+              window.arcSecondX,
+              window.arcSecondY
+            );
+            tctx.stroke();
           } else {
             tctx.lineTo(
               (mouseX - canvas.getBoundingClientRect().left) /
@@ -976,6 +991,15 @@ function clearDraw() {
       document.getElementById("previewId" + current).width,
       document.getElementById("previewId" + current).height
     );
+
+    undoStackIndex++;
+  undoStack.push(
+    layers["layer" + current].bitMap
+      .getContext("2d")
+      .getImageData(0, 0, canvas.width, canvas.height)
+  );
+  redoStack = [];
+  redoStackIndex = 0;
 }
 function changeColor(newColor) {
   color = newColor;
@@ -1081,6 +1105,15 @@ function moveDown(pmo) {
   arr.reverse();
 }
 
+function settings() {
+  if (document.getElementById("settings").style.display == "none") {
+    document.getElementById("settings").style.display = "block";
+    document.getElementById("settings").scrollTo(0, 0);
+  } else {
+    document.getElementById("settings").style.display = "none";
+  }
+}
+
 document.getElementById("myRange").oninput = function () {
   strokeSize = document.getElementById("myRange").value;
 };
@@ -1115,4 +1148,9 @@ document.getElementById("me0").style.left = bgCanvas.style.left;
 document.getElementById("me0").style.top = 0;
 document.getElementById("tempCanvas").style.left = bgCanvas.style.left;
 document.getElementById("tempCanvas").style.top = 0;
-undoStack.push(layers["layer" + current].bitMap.getContext('2d').getImageData(0, 0, canvas.width, canvas.height));
+undoStack.push(
+  layers["layer" + current].bitMap
+    .getContext("2d")
+    .getImageData(0, 0, canvas.width, canvas.height)
+);
+settings();
