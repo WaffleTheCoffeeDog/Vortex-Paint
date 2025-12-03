@@ -1,6 +1,7 @@
 // variable declarations
 var layers = {};
 var totalLayers = 0;
+realTotalLayers = 0;
 var canvasHeightS = 1080;
 var canvasWidthS = 1920;
 var lWidth = 5;
@@ -167,10 +168,11 @@ function newLayer() {
   layers["layer" + totalLayers]["previewContainer"].appendChild(
     layers["layer" + totalLayers]["previewUp"]
   );
-
+document.getElementById("previewContainerId"+current).classList.remove("selectedLayer")
   current = totalLayers;
+  realTotalLayers = realTotalLayers + 1;
   totalLayers = totalLayers + 1;
-
+document.getElementById("previewContainerId"+current).classList.add("selectedLayer")
   initializeCanvas();
 
   /* 
@@ -199,30 +201,7 @@ function toggleVisibility(layerName) {
 }
 
 function deleteLayer(layerName) {
-  /* 
-  if (document.getElementById("me"+(parseInt(current)+1)) != null) {
-    current = totalLayers;
-  document.body.removeChild(layers["layer" + layerName]["bitMap"]);
-  document.getElementById("layerbar").removeChild(layers["layer" + layerName]["previewContainer"]);
-  layers["layer" + layerName]["previewContainer"].removeChild(layers["layer" + layerName]["preview"]);
-  layers["layer" + layerName]["previewContainer"].removeChild(layers["layer" + layerName]["previewDelete"]);
-  layers["layer" + layerName]["previewContainer"].removeChild(layers["layer" + layerName]["previewHide"]);
-    current = parseInt(totalLayers)+1; layerChange();
-    totalLayers = parseInt(totalLayers) - 1;
-  } else {
-    if (document.getElementById("me"+(parseInt(current)-1)) != null) {
-      current = totalLayers;
-  document.body.removeChild(layers["layer" + layerName]["bitMap"]);
-  document.getElementById("layerbar").removeChild(layers["layer" + layerName]["previewContainer"]);
-  layers["layer" + layerName]["previewContainer"].removeChild(layers["layer" + layerName]["preview"]);
-  layers["layer" + layerName]["previewContainer"].removeChild(layers["layer" + layerName]["previewDelete"]);
-  layers["layer" + layerName]["previewContainer"].removeChild(layers["layer" + layerName]["previewHide"]);
-    current = parseInt(totalLayers)-1; layerChange();
-    totalLayers = parseInt(totalLayers) - 1
-  }
-  }
-  
-  */
+  if (realTotalLayers>1){
 
   ctx["me" + layerName].clearRect(0, 0, canvas.width, canvas.height);
 
@@ -233,6 +212,10 @@ function deleteLayer(layerName) {
   layers["layer" + layerName]["previewHide"].style.display = "none";
   layers["layer" + layerName]["previewDuplicate"].style.display = "none";
   layers["layer" + layerName]["vector"].style.display = "none";
+
+  realTotalLayers = realTotalLayers - 1;
+
+  current = null}
 }
 
 function duplicateLayer(layerName) {
@@ -254,6 +237,7 @@ function attemptLayerChange(layerName) {
   if (
     layers["layer" + layerName]["previewHide"].textContent != "visibility_off"
   ) {
+    if (current) {document.getElementById("previewContainerId"+current).classList.remove("selectedLayer")}
     current = layerName;
     layerChange();
   } else {
@@ -297,6 +281,7 @@ function initializeCanvas() {
 function layerChange() {
   canvas = document.getElementById("me" + current);
   ctx["me" + current] = canvas.getContext("2d");
+  document.getElementById("previewContainerId"+current).classList.add("selectedLayer")
 }
 
 // Toggle sidebar
@@ -449,7 +434,7 @@ function onMouseDown(e) {
     ) {
       LMB = true;
 
-      if (!!window.triangleSecondX && mode == "triangle") {
+      if (window.triangleSecondX && mode == "triangle") {
         ctx["me" + current].beginPath();
         ctx["me" + current].moveTo(
           window.triangleStartX,
@@ -467,11 +452,11 @@ function onMouseDown(e) {
         );
         ctx["me" + current].closePath();
         ctx["me" + current].stroke();
-
-        window.completingTriangle = false;
+        setTimeout(() => {window.completingTriangle = false;
         window.triangleStartX = undefined;
         window.triangleSecondX = undefined;
-        temp.style.display = "none";
+        temp.style.display = "none";},100)
+        
       }
 
       if (!!window.arcSecondX && mode == "arc") {

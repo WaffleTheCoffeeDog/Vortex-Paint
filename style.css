@@ -389,3 +389,11 @@ html{
   top:3%;
   transition:0.3s;
 }
+
+.selectedLayer {
+  background-color:#bb00ffaa;
+  position:relative;
+  width:85%;
+  margin-bottom:10px;
+  border-radius: 10%;
+}
