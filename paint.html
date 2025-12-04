@@ -6,6 +6,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
+    <link
+    rel="stylesheet" href="vortex.css">
   </head>
   <div id="paintCursor" class="paintCursor"></div>
   <body>
@@ -144,7 +146,7 @@
               <input type="text" maxlength="30" id="pictureName" />
               <button onclick="downloadCanvas()">Save</button>
               <button onclick="clearDraw()">Clear Layer</button>
-              <button onclick="imageData()">Fetch Image Data</button>
+              <!--<button onclick="imageData()">Fetch Image Data</button>-->
               <input
                 type="range"
                 min="1"
@@ -153,7 +155,8 @@
                 class="slider"
                 id="myRange"
               />
-              <button onclick="settings()">Settings</button>
+              <!--<button onclick="settings(); vantaEffect.resize();">Settings</button>--> <div class="text-container"><button disabled>Settings</button><div class="custom-tooltip"><h3 class="red">UNDER DEVELOPMENT</h3></div></div>
+              
             </center>
           </h1>
         </div>
@@ -161,21 +164,18 @@
     </div>
     <span id="canvasContainer" class="canvasContainer"></span>
     <div id="settings" class="settings">
+      <div id="bg"></div>
       <center>
-        <div class="settingsItem">
+        <div class="item">
         <h1>Settings</h1>
-        </div> <br> <button onclick="settings()" class="close">Close</button>
-        
-        <br />
-        <div class="settingsItem" style="height: 1000vh;">
+        </div> <button onclick="settings()" class="close">Close</button>
+        <div class="item" style="height: 100%;">
         
         </div>
-        
-        <br />
-        <br />
       </center>
     </div>
   </body>
   <script src="scripts.js"></script>
   <link rel="stylesheet" href="style.css" />
+  <script src="bg.js"></script>
 </html>

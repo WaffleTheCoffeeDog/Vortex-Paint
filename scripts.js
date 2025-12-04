@@ -38,12 +38,14 @@ var veryOMY;
 var color = "#000000";
 var saveCanvas = document.getElementById("SaveCanvas");
 var undoStack = [];
-var undoStackIndex = 0;
+var undoStackIndex = [];
 var redoStack = [];
-var redoStackIndex = 0;
+var redoStackIndex = [];
+var newlayer
 
 //layer system
 function newLayer() {
+  newlayer = true;
   layers["layer" + totalLayers] = {};
 
   layers["layer" + totalLayers]["bitMap"] = document.createElement("canvas");
@@ -248,6 +250,10 @@ function attemptLayerChange(layerName) {
 document.getElementById("me0").style.left = canvasWidthS * -0.25 + "px";
 
 function initializeCanvas() {
+  undoStack[current] = []
+  undoStackIndex[current] = [0]
+  redoStack[current] = []
+  redoStackIndex[current] = [0]
   canvas = document.getElementById("me" + (totalLayers - 1));
   Object.values(layers).forEach((layer) => {
     if (document.getElementById(layer.bitMap.id) != null) {
@@ -276,6 +282,11 @@ function initializeCanvas() {
   for (let i = 0; i < 1000; i++) {
     moveDown(totalLayers);
   }
+  undoStack[current].push(
+  layers["layer" + current].bitMap
+    .getContext("2d")
+    .getImageData(0, 0, canvas.width, canvas.height)
+);
 }
 
 function layerChange() {
@@ -362,24 +373,26 @@ function logKey(e) {
     ctrDown = true;
   }
   if (e.code === "KeyZ") {
-    if (undoStackIndex > 0) {
-      undoStackIndex--;
+    if (undoStackIndex[current] > 0) {
+      undoStackIndex[current]--;
       ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
-      if (undoStack[undoStackIndex]) {
-        redoStack.push(undoStack.splice(undoStackIndex + 1)[0]);
-        ctx["me" + current].putImageData(undoStack[undoStackIndex], 0, 0);
+      if (undoStack[current][undoStackIndex[current]]) {
+        redoStack[current].push(undoStack[current].splice(undoStackIndex[current] + 1)[0]);
+        ctx["me" + current].putImageData(undoStack[current][undoStackIndex[current]], 0, 0);
       }
     }
+    drawPreview()
   }
 
   if (e.code === "KeyY") {
-    if (redoStack.length > 0) {
+    if (redoStack[current].length > 0) {
       ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
-      const redoAction = redoStack.pop();
-      undoStack.splice(undoStackIndex + 1, 0, redoAction);
-      undoStackIndex++;
+      const redoAction = redoStack[current].pop();
+      undoStack[current].splice(undoStackIndex[current] + 1, 0, redoAction);
+      undoStackIndex[current]++;
       ctx["me" + current].putImageData(redoAction, 0, 0);
     }
+    drawPreview()
   }
   console.log(lastKeyPressed);
 }
@@ -452,11 +465,12 @@ function onMouseDown(e) {
         );
         ctx["me" + current].closePath();
         ctx["me" + current].stroke();
-        setTimeout(() => {window.completingTriangle = false;
+        
+        window.completingTriangle = false;
         window.triangleStartX = undefined;
         window.triangleSecondX = undefined;
-        temp.style.display = "none";},100)
-        
+        temp.style.display = "none";
+        LMB = false;
       }
 
       if (!!window.arcSecondX && mode == "arc") {
@@ -519,14 +533,15 @@ function onMouseDown(e) {
 
 function onMouseUp() {
 if (LMB){
-  undoStackIndex++;
-  undoStack.push(
+  /*if(!newlayer) {*/undoStackIndex[current]++;
+  undoStack[current].push(
     layers["layer" + current].bitMap
       .getContext("2d")
       .getImageData(0, 0, canvas.width, canvas.height)
   );
-  redoStack = [];
-  redoStackIndex = 0;}
+  redoStack[current] = [];
+  redoStackIndex[current] = 0;} else {newlayer = false}
+  /*}*/
 
   RMB = false;
   LMB = false;
@@ -542,7 +557,7 @@ function drawFunct(e) {
     ctx["me" + current].lineWidth = strokeSize;
     ctx["me" + current].strokeStyle = color;
   }
-  if (LMB == true /*|| LMB == false*/) {
+  if (LMB == true) {
     if (clickToggle == false) {
       veryOMX = mouseX;
       veryOMY = mouseY;
@@ -921,6 +936,14 @@ function drawFunct(e) {
       }
     });
   }
+  drawPreview();
+}
+
+function onMouseMove(e) {
+  drawFunct(e);
+}
+
+function drawPreview() {
   document
     .getElementById("previewId" + current)
     .getContext("2d")
@@ -941,10 +964,6 @@ function drawFunct(e) {
       (canvasHeightS / canvasWidthS) *
         document.getElementById("previewId" + current).width
     );
-}
-
-function onMouseMove(e) {
-  drawFunct(e);
 }
 
 document.addEventListener(
@@ -977,14 +996,14 @@ function clearDraw() {
       document.getElementById("previewId" + current).height
     );
 
-    undoStackIndex++;
-  undoStack.push(
+    undoStackIndex[current]++;
+  undoStack[current].push(
     layers["layer" + current].bitMap
       .getContext("2d")
       .getImageData(0, 0, canvas.width, canvas.height)
   );
-  redoStack = [];
-  redoStackIndex = 0;
+  redoStack[current] = [];
+  redoStackIndex[current] = 0;
 }
 function changeColor(newColor) {
   color = newColor;
@@ -1133,9 +1152,5 @@ document.getElementById("me0").style.left = bgCanvas.style.left;
 document.getElementById("me0").style.top = 0;
 document.getElementById("tempCanvas").style.left = bgCanvas.style.left;
 document.getElementById("tempCanvas").style.top = 0;
-undoStack.push(
-  layers["layer" + current].bitMap
-    .getContext("2d")
-    .getImageData(0, 0, canvas.width, canvas.height)
-);
 settings();
+newlayer = false;

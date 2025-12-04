@@ -397,3 +397,33 @@ html{
   margin-bottom:10px;
   border-radius: 10%;
 }
+
+.text-container{
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: fit-content;
+  height: min-content;
+  display: inline-table;
+}
+
+.text-container:hover .custom-tooltip {
+  visibility: visible;
+  opacity: 1;
+  display: block;
+  height:100%
+}
+
+.custom-tooltip {
+  width: 200px;
+  position: relative;
+  bottom: 0;
+  left: 0; 
+  margin-left: 0px;
+  background-color: rgba(0, 0, 0, 0.3);
+  height:0;
+}
+
+input[type="color"] {
+  height: 100%;
+}
