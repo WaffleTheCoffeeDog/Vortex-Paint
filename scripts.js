@@ -41,7 +41,7 @@ var undoStack = [];
 var undoStackIndex = [];
 var redoStack = [];
 var redoStackIndex = [];
-var newlayer
+var newlayer;
 
 //layer system
 function newLayer() {
@@ -170,11 +170,15 @@ function newLayer() {
   layers["layer" + totalLayers]["previewContainer"].appendChild(
     layers["layer" + totalLayers]["previewUp"]
   );
-document.getElementById("previewContainerId"+current).classList.remove("selectedLayer")
+  document
+    .getElementById("previewContainerId" + current)
+    .classList.remove("selectedLayer");
   current = totalLayers;
   realTotalLayers = realTotalLayers + 1;
   totalLayers = totalLayers + 1;
-document.getElementById("previewContainerId"+current).classList.add("selectedLayer")
+  document
+    .getElementById("previewContainerId" + current)
+    .classList.add("selectedLayer");
   initializeCanvas();
 
   /* 
@@ -203,21 +207,21 @@ function toggleVisibility(layerName) {
 }
 
 function deleteLayer(layerName) {
-  if (realTotalLayers>1){
+  if (realTotalLayers > 1) {
+    ctx["me" + layerName].clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx["me" + layerName].clearRect(0, 0, canvas.width, canvas.height);
+    layers["layer" + layerName]["bitMap"].style.display = "none";
+    layers["layer" + layerName]["previewContainer"].style.display = "none";
+    layers["layer" + layerName]["preview"].style.display = "none";
+    layers["layer" + layerName]["previewDelete"].style.display = "none";
+    layers["layer" + layerName]["previewHide"].style.display = "none";
+    layers["layer" + layerName]["previewDuplicate"].style.display = "none";
+    layers["layer" + layerName]["vector"].style.display = "none";
 
-  layers["layer" + layerName]["bitMap"].style.display = "none";
-  layers["layer" + layerName]["previewContainer"].style.display = "none";
-  layers["layer" + layerName]["preview"].style.display = "none";
-  layers["layer" + layerName]["previewDelete"].style.display = "none";
-  layers["layer" + layerName]["previewHide"].style.display = "none";
-  layers["layer" + layerName]["previewDuplicate"].style.display = "none";
-  layers["layer" + layerName]["vector"].style.display = "none";
+    realTotalLayers = realTotalLayers - 1;
 
-  realTotalLayers = realTotalLayers - 1;
-
-  current = null}
+    current = null;
+  }
 }
 
 function duplicateLayer(layerName) {
@@ -239,7 +243,11 @@ function attemptLayerChange(layerName) {
   if (
     layers["layer" + layerName]["previewHide"].textContent != "visibility_off"
   ) {
-    if (current) {document.getElementById("previewContainerId"+current).classList.remove("selectedLayer")}
+    if (current) {
+      document
+        .getElementById("previewContainerId" + current)
+        .classList.remove("selectedLayer");
+    }
     current = layerName;
     layerChange();
   } else {
@@ -250,10 +258,10 @@ function attemptLayerChange(layerName) {
 document.getElementById("me0").style.left = canvasWidthS * -0.25 + "px";
 
 function initializeCanvas() {
-  undoStack[current] = []
-  undoStackIndex[current] = [0]
-  redoStack[current] = []
-  redoStackIndex[current] = [0]
+  undoStack[current] = [];
+  undoStackIndex[current] = [0];
+  redoStack[current] = [];
+  redoStackIndex[current] = [0];
   canvas = document.getElementById("me" + (totalLayers - 1));
   Object.values(layers).forEach((layer) => {
     if (document.getElementById(layer.bitMap.id) != null) {
@@ -283,16 +291,18 @@ function initializeCanvas() {
     moveDown(totalLayers);
   }
   undoStack[current].push(
-  layers["layer" + current].bitMap
-    .getContext("2d")
-    .getImageData(0, 0, canvas.width, canvas.height)
-);
+    layers["layer" + current].bitMap
+      .getContext("2d")
+      .getImageData(0, 0, canvas.width, canvas.height)
+  );
 }
 
 function layerChange() {
   canvas = document.getElementById("me" + current);
   ctx["me" + current] = canvas.getContext("2d");
-  document.getElementById("previewContainerId"+current).classList.add("selectedLayer")
+  document
+    .getElementById("previewContainerId" + current)
+    .classList.add("selectedLayer");
 }
 
 // Toggle sidebar
@@ -377,11 +387,17 @@ function logKey(e) {
       undoStackIndex[current]--;
       ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
       if (undoStack[current][undoStackIndex[current]]) {
-        redoStack[current].push(undoStack[current].splice(undoStackIndex[current] + 1)[0]);
-        ctx["me" + current].putImageData(undoStack[current][undoStackIndex[current]], 0, 0);
+        redoStack[current].push(
+          undoStack[current].splice(undoStackIndex[current] + 1)[0]
+        );
+        ctx["me" + current].putImageData(
+          undoStack[current][undoStackIndex[current]],
+          0,
+          0
+        );
       }
     }
-    drawPreview()
+    drawPreview();
   }
 
   if (e.code === "KeyY") {
@@ -392,7 +408,7 @@ function logKey(e) {
       undoStackIndex[current]++;
       ctx["me" + current].putImageData(redoAction, 0, 0);
     }
-    drawPreview()
+    drawPreview();
   }
   console.log(lastKeyPressed);
 }
@@ -465,12 +481,14 @@ function onMouseDown(e) {
         );
         ctx["me" + current].closePath();
         ctx["me" + current].stroke();
-        
-        window.completingTriangle = false;
-        window.triangleStartX = undefined;
-        window.triangleSecondX = undefined;
-        temp.style.display = "none";
-        LMB = false;
+
+        setTimeout(() => {
+          window.completingTriangle = false;
+          window.triangleStartX = undefined;
+          window.triangleSecondX = undefined;
+          temp.style.display = "none";
+          LMB = false;
+        }, 10);
       }
 
       if (!!window.arcSecondX && mode == "arc") {
@@ -493,10 +511,13 @@ function onMouseDown(e) {
         );
         ctx["me" + current].stroke();
 
-        window.completingArc = false;
-        window.arcStartX = undefined;
-        window.arcSecondX = undefined;
-        temp.style.display = "none";
+        setTimeout(() => {
+          window.completingArc = false;
+          window.arcStartX = undefined;
+          window.arcSecondX = undefined;
+          temp.style.display = "none";
+          LMB = false;
+        }, 10);
       }
     }
 
@@ -532,15 +553,18 @@ function onMouseDown(e) {
 }
 
 function onMouseUp() {
-if (LMB){
-  /*if(!newlayer) {*/undoStackIndex[current]++;
-  undoStack[current].push(
-    layers["layer" + current].bitMap
-      .getContext("2d")
-      .getImageData(0, 0, canvas.width, canvas.height)
-  );
-  redoStack[current] = [];
-  redoStackIndex[current] = 0;} else {newlayer = false}
+  if (LMB) {
+    /*if(!newlayer) {*/ undoStackIndex[current]++;
+    undoStack[current].push(
+      layers["layer" + current].bitMap
+        .getContext("2d")
+        .getImageData(0, 0, canvas.width, canvas.height)
+    );
+    redoStack[current] = [];
+    redoStackIndex[current] = 0;
+  } else {
+    newlayer = false;
+  }
   /*}*/
 
   RMB = false;
@@ -979,9 +1003,6 @@ document.getElementById("me0").style.transform = `scale(${zoom / 250})`;
 
 var canvas = document.getElementById("me0");
 ctx["me0"].lineWidth = 1;
-ctx["me0"].moveTo(0, 0);
-ctx["me0"].lineTo(100, 100);
-ctx["me0"].stroke();
 ctx["me0"].lineCap = "round";
 
 function clearDraw() {
@@ -996,7 +1017,7 @@ function clearDraw() {
       document.getElementById("previewId" + current).height
     );
 
-    undoStackIndex[current]++;
+  undoStackIndex[current]++;
   undoStack[current].push(
     layers["layer" + current].bitMap
       .getContext("2d")
