@@ -27,11 +27,12 @@ var canvas;
 var ctx = [];
 var LMB = false;
 var strokeSize = 3;
+var relativeStrokeSize = strokeSize;
 var paintCursor = document.getElementById("paintCursor");
 var bgCanvas = document.getElementById("backgroundCanvas");
 var lastCreated;
 var temp = document.getElementById("tempCanvas");
-var tctx = temp.getContext("2d");
+var tctx = temp.getContext("2d", { willReadFrequently: true });
 var clickToggle;
 var veryOMX;
 var veryOMY;
@@ -228,7 +229,7 @@ function duplicateLayer(layerName) {
   newLayer();
   document
     .getElementById("me" + current)
-    .getContext("2d")
+    .getContext("2d", { willReadFrequently: true })
     .drawImage(
       document.getElementById("me" + layerName),
       0,
@@ -265,7 +266,8 @@ function initializeCanvas() {
   canvas = document.getElementById("me" + (totalLayers - 1));
   Object.values(layers).forEach((layer) => {
     if (document.getElementById(layer.bitMap.id) != null) {
-      ctx[layer.bitMap.id] = canvas.getContext("2d");
+      // ensure contexts are created with willReadFrequently for canvases we read often
+      ctx[layer.bitMap.id] = canvas.getContext("2d", { willReadFrequently: true });
       canvas.style.left = "px";
       canvas.style.top = "0px";
       canvas.width = canvasWidthS;
@@ -292,20 +294,19 @@ function initializeCanvas() {
   }
   undoStack[current].push(
     layers["layer" + current].bitMap
-      .getContext("2d")
+      .getContext("2d", { willReadFrequently: true })
       .getImageData(0, 0, canvas.width, canvas.height)
   );
 }
 
 function layerChange() {
   canvas = document.getElementById("me" + current);
-  ctx["me" + current] = canvas.getContext("2d");
+  ctx["me" + current] = canvas.getContext("2d", { willReadFrequently: true });
   document
     .getElementById("previewContainerId" + current)
     .classList.add("selectedLayer");
 }
 
-// Toggle sidebar
 function toggleSidebar(id) {
   const sidebar = document.getElementById(id);
   if (
@@ -370,7 +371,6 @@ function toggleSidebar(id) {
   }
 }
 
-// event listeners
 document.addEventListener("keydown", logKey);
 document.addEventListener("keyup", onKeyUp);
 
@@ -444,7 +444,7 @@ function myFunction(event) {
 
       paintCursor.style.transform = `translate(${mouseX - 5}px, ${
         mouseY - 5
-      }px) scale(${((strokeSize / 15) * zoom) / 100})`;
+      }px) scale(${((relativeStrokeSize / 15) * zoom) / 100})`;
     }
   }
 }
@@ -557,7 +557,7 @@ function onMouseUp() {
     /*if(!newlayer) {*/ undoStackIndex[current]++;
     undoStack[current].push(
       layers["layer" + current].bitMap
-        .getContext("2d")
+        .getContext("2d", { willReadFrequently: true })
         .getImageData(0, 0, canvas.width, canvas.height)
     );
     redoStack[current] = [];
@@ -576,9 +576,9 @@ function drawFunct(e) {
   window.scrollTo(0, 0);
   paintCursor.style.transform = `translate(${mouseX - 5}px, ${
     mouseY - 5
-  }px) scale(${((strokeSize / 15) * zoom) / 100})`;
+  }px) scale(${((relativeStrokeSize / 15) * zoom) / 100})`;
   if (LMB) {
-    ctx["me" + current].lineWidth = strokeSize;
+    ctx["me" + current].lineWidth = relativeStrokeSize;
     ctx["me" + current].strokeStyle = color;
   }
   if (LMB == true) {
@@ -630,7 +630,7 @@ function drawFunct(e) {
         }
         if (LMB) {
           temp.style.display = "block";
-          tctx.lineWidth = strokeSize;
+          tctx.lineWidth = relativeStrokeSize;
           tctx.strokeStyle = color;
           tctx.lineCap = "round";
           tctx.clearRect(0, 0, temp.width, temp.height);
@@ -652,7 +652,7 @@ function drawFunct(e) {
         }
 
         if (!LMB && lineToggle) {
-          ctx["me" + current].lineWidth = strokeSize;
+          ctx["me" + current].lineWidth = relativeStrokeSize;
           ctx["me" + current].beginPath();
           ctx["me" + current].moveTo(
             (OMX - canvas.getBoundingClientRect().left) /
@@ -683,7 +683,7 @@ function drawFunct(e) {
         }
         if (LMB) {
           temp.style.display = "block";
-          tctx.lineWidth = strokeSize;
+          tctx.lineWidth = relativeStrokeSize;
           tctx.strokeStyle = color;
           tctx.lineCap = "round";
           tctx.clearRect(0, 0, temp.width, temp.height);
@@ -710,7 +710,7 @@ function drawFunct(e) {
         }
 
         if (!LMB && lineToggle) {
-          ctx["me" + current].lineWidth = strokeSize;
+          ctx["me" + current].lineWidth = relativeStrokeSize;
           ctx["me" + current].moveTo(
             (OMX - canvas.getBoundingClientRect().left) /
               parseFloat(canvas.style.transform.slice(6, -1)),
@@ -746,7 +746,7 @@ function drawFunct(e) {
         }
         if (LMB) {
           temp.style.display = "block";
-          tctx.lineWidth = strokeSize;
+          tctx.lineWidth = relativeStrokeSize;
           tctx.strokeStyle = color;
           tctx.lineCap = "round";
           tctx.clearRect(0, 0, temp.width, temp.height);
@@ -770,7 +770,7 @@ function drawFunct(e) {
         }
 
         if (!LMB && lineToggle) {
-          ctx["me" + current].lineWidth = strokeSize;
+          ctx["me" + current].lineWidth = relativeStrokeSize;
           ctx["me" + current].beginPath();
           ctx["me" + current].moveTo(
             (OMX - canvas.getBoundingClientRect().left) /
@@ -812,7 +812,7 @@ function drawFunct(e) {
             (mouseY - canvas.getBoundingClientRect().top) /
             parseFloat(canvas.style.transform.slice(6, -1));
           temp.style.display = "block";
-          tctx.lineWidth = strokeSize;
+          tctx.lineWidth = relativeStrokeSize;
           tctx.strokeStyle = color;
           tctx.lineCap = "round";
         }
@@ -881,7 +881,7 @@ function drawFunct(e) {
             (mouseY - canvas.getBoundingClientRect().top) /
             parseFloat(canvas.style.transform.slice(6, -1));
           temp.style.display = "block";
-          tctx.lineWidth = strokeSize;
+          tctx.lineWidth = relativeStrokeSize;
           tctx.strokeStyle = color;
           tctx.lineCap = "round";
         }
@@ -967,27 +967,65 @@ function onMouseMove(e) {
   drawFunct(e);
 }
 
+function _isCanvasTarget(el) {
+  return !!el && (el.classList?.contains?.("canvas") || el.id === "tempCanvas" || el.id === "backgroundCanvas");
+}
+
+function _firstTouchPoint(touch) {
+  return { x: touch.clientX, y: touch.clientY };
+}
+
+function handleTouchStart(ev) {
+  if (!ev.touches || ev.touches.length === 0) return;
+  const touch = ev.touches[0];
+  const pt = _firstTouchPoint(touch);
+  const target = document.elementFromPoint(pt.x, pt.y);
+  if (_isCanvasTarget(target)) {
+    ev.preventDefault();
+    onMouseDown({ which: 1, button: 0, x: pt.x, y: pt.y });
+  }
+}
+
+function handleTouchMove(ev) {
+  if (!ev.touches || ev.touches.length === 0) return;
+  const touch = ev.touches[0];
+  const pt = _firstTouchPoint(touch);
+  const target = document.elementFromPoint(pt.x, pt.y);
+  if (_isCanvasTarget(target)) {
+    ev.preventDefault();
+    onMouseMove({ x: pt.x, y: pt.y });
+  }
+}
+
+function handleTouchEnd(ev) {
+
+  onMouseUp();
+}
+
+addEventListener("touchstart", handleTouchStart, { passive: false });
+addEventListener("touchmove", handleTouchMove, { passive: false });
+addEventListener("touchend", handleTouchEnd, { passive: false });
+
 function drawPreview() {
-  document
+
+  const pctx = document
     .getElementById("previewId" + current)
-    .getContext("2d")
-    .clearRect(
-      0,
-      0,
-      document.getElementById("previewId" + current).width,
-      document.getElementById("previewId" + current).height
-    );
-  document
-    .getElementById("previewId" + current)
-    .getContext("2d")
-    .drawImage(
-      document.getElementById("me" + current),
-      0,
-      0,
-      document.getElementById("previewId" + current).width,
-      (canvasHeightS / canvasWidthS) *
-        document.getElementById("previewId" + current).width
-    );
+    .getContext("2d", { willReadFrequently: true });
+
+  pctx.clearRect(
+    0,
+    0,
+    document.getElementById("previewId" + current).width,
+    document.getElementById("previewId" + current).height
+  );
+  pctx.drawImage(
+    document.getElementById("me" + current),
+    0,
+    0,
+    document.getElementById("previewId" + current).width,
+    (canvasHeightS / canvasWidthS) *
+      document.getElementById("previewId" + current).width
+  );
 }
 
 document.addEventListener(
@@ -1002,25 +1040,26 @@ addEventListener("mousemove", onMouseMove);
 document.getElementById("me0").style.transform = `scale(${zoom / 250})`;
 
 var canvas = document.getElementById("me0");
+ctx["me0"] = canvas.getContext("2d", { willReadFrequently: true });
 ctx["me0"].lineWidth = 1;
 ctx["me0"].lineCap = "round";
 
 function clearDraw() {
   ctx["me" + current].clearRect(0, 0, canvas.width, canvas.height);
-  document
+  const pctx = document
     .getElementById("previewId" + current)
-    .getContext("2d")
-    .clearRect(
-      0,
-      0,
-      document.getElementById("previewId" + current).width,
-      document.getElementById("previewId" + current).height
-    );
+    .getContext("2d", { willReadFrequently: true });
+  pctx.clearRect(
+    0,
+    0,
+    document.getElementById("previewId" + current).width,
+    document.getElementById("previewId" + current).height
+  );
 
   undoStackIndex[current]++;
   undoStack[current].push(
     layers["layer" + current].bitMap
-      .getContext("2d")
+      .getContext("2d", { willReadFrequently: true })
       .getImageData(0, 0, canvas.width, canvas.height)
   );
   redoStack[current] = [];
@@ -1031,13 +1070,10 @@ function changeColor(newColor) {
 }
 
 function downloadCanvas() {
-  saveCanvas
-    .getContext("2d")
-    .clearRect(0, 0, saveCanvas.width, saveCanvas.height);
+  const saveCtx = saveCanvas.getContext("2d", { willReadFrequently: true });
+  saveCtx.clearRect(0, 0, saveCanvas.width, saveCanvas.height);
   Object.values(layers).forEach((layer) => {
-    saveCanvas
-      .getContext("2d")
-      .drawImage(document.getElementById(layer.bitMap.id), 0, 0);
+    saveCtx.drawImage(document.getElementById(layer.bitMap.id), 0, 0);
   });
   const link = document.createElement("a");
   link.href = saveCanvas.toDataURL("image/png");
@@ -1046,13 +1082,10 @@ function downloadCanvas() {
 }
 
 function imageData() {
-  saveCanvas
-    .getContext("2d")
-    .clearRect(0, 0, saveCanvas.width, saveCanvas.height);
+  const saveCtx = saveCanvas.getContext("2d", { willReadFrequently: true });
+  saveCtx.clearRect(0, 0, saveCanvas.width, saveCanvas.height);
   Object.values(layers).forEach((layer) => {
-    saveCanvas
-      .getContext("2d")
-      .drawImage(document.getElementById(layer.bitMap.id), 0, 0);
+    saveCtx.drawImage(document.getElementById(layer.bitMap.id), 0, 0);
   });
   console.log(saveCanvas.toDataURL());
   navigator.clipboard.writeText(saveCanvas.toDataURL());
@@ -1140,7 +1173,8 @@ function settings() {
 }
 
 document.getElementById("myRange").oninput = function () {
-  strokeSize = document.getElementById("myRange").value;
+  relativeStrokeSize = document.getElementById("myRange").value;
+StrokeSize = document.getElementById("myRange").value;
 };
 bgCanvas.width = canvasWidthS;
 bgCanvas.height = canvasHeightS;
@@ -1175,3 +1209,16 @@ document.getElementById("tempCanvas").style.left = bgCanvas.style.left;
 document.getElementById("tempCanvas").style.top = 0;
 settings();
 newlayer = false;
+
+Pressure.set('#tempCanvas', {
+  change: function(force, event){
+    this.innerHTML = force;
+    console.log(force);
+    relativeStrokeSize = StrokeSize * (force+0.5);
+  },
+  unsupported: function(){
+    force = 1;
+    console.log(force);
+    relativeStrokeSize = StrokeSize * (force+0.5);
+  }
+}, {polyfill: false});
