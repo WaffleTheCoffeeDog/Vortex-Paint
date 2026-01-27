@@ -125,6 +125,7 @@ html{
         flex-direction: column;
         align-items: center;
         transition: 1s;
+        overflow-x: hidden;
       }
 
       .previewContainerButActuallyRealThisTimeIPromise{
@@ -426,4 +427,10 @@ html{
 
 input[type="color"] {
   height: 100%;
+}
+
+.topbarButton{
+  border-radius: 0px;
+  margin: 0px;
+  
 }

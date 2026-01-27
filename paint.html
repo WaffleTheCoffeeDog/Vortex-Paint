@@ -119,6 +119,7 @@
       <center>
         <div class="layerbar" id="layerbar">
           <center>
+            <input type="text" maxlength="30" id="pictureName" />
             <span
               class="material-symbols-outlined"
               id="addlayer"
@@ -140,19 +141,16 @@
       <span id="topbarspan">
         <div class="topThings">
           <h1>
-            <center>
-              <p class="pageText">Vortex Paint [1.1.0 - Canvas Control UPD]</p>
               <br />
-              <input type="text" maxlength="30" id="pictureName" />
-              <button onclick="downloadCanvas()">Save</button>
-              <button onclick="clearDraw()">Clear Layer</button>
+              <button onclick="downloadCanvas()" class="topbarButton">Save</button>
+              <button onclick="clearDraw()" class="topbarButton">Clear Layer</button>
               <!--<button onclick="imageData()">Fetch Image Data</button>-->
               <input
                 type="range"
                 min="1"
                 max="150"
                 value="1"
-                class="slider"
+                class="slider "
                 id="myRange"
               />
               <!--<button onclick="settings(); vantaEffect.resize();">Settings</button>--> <div class="text-container"><button disabled>Settings</button><div class="custom-tooltip"><h3 class="red">UNDER DEVELOPMENT</h3></div></div>
@@ -163,14 +161,55 @@
       </span>
     </div>
     <span id="canvasContainer" class="canvasContainer"></span>
-    <div id="settings" class="settings">
-      <div id="bg"></div>
-      <center>
-        <div class="item">
-        <h1>Settings</h1>
-        </div> <button onclick="settings()" class="close">Close</button>
-        <div class="item" style="height: 100%;">
+
+<div id="settings" class="settings">
+  <div id="bg"></div>
+  <center>
+    <div class="item">
+      <h1>Settings</h1>
+    </div>
+
+    <button onclick="settings()" class="close">Close</button>
+<!--
+    <div class="item" style="height: 100%; overflow-y: auto;">
+
         
+      <div class="setting-field">
+        <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()">
+      </div>
+
+
+      <div class="setting-field" id="titleBoxContainer">
+        <input type="text" id="canvasTitle" placeholder="Enter a title..." />
+        <button onclick="submitTitle()">Submit</button>
+      </div>
+
+
+      <div class="setting-field">
+        <input type="range" id="brushSize" min="1" max="100" value="20" 
+               oninput="updateBrushSize(this.value)">
+        <span id="brushSizeValue">20</span>
+      </div>
+
+
+      <div class="setting-field" id="disappearingBox">
+        <input type="text" id="quickNote" placeholder="Type something..." />
+        <button onclick="submitNote()">Save</button>
+      </div>
+-->
+    </div>
+  </center>
+</div>
+
+
+
+
+
+
+
+
+
+
         </div>
       </center>
     </div>
@@ -179,4 +218,24 @@
   <script src="scripts.js"></script>
   <link rel="stylesheet" href="style.css" />
   <script src="bg.js"></script>
+  <script>
+
+function submitTitle() {
+  const title = document.getElementById("canvasTitle").value.trim();
+  if (title !== "") {
+    document.getElementById("titleBoxContainer").style.display = "none";
+    console.log("Canvas title set:", title);
+  }
+}
+
+/* Disappearing Text Box */
+function submitNote() {
+  const note = document.getElementById("quickNote").value.trim();
+  if (note !== "") {
+    document.getElementById("disappearingBox").style.display = "none";
+    console.log("Note saved:", note);
+  }
+}
+</script>
+
 </html>

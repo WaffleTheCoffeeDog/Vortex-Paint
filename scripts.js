@@ -319,27 +319,14 @@ function toggleSidebar(id) {
       document.getElementById("toggle-toolbar-btn").style.left = "0";
       document.getElementById("toolbarArrow").style.transform =
         "rotate(180deg)";
-      document.getElementById("topbar").style.left = "0";
-      if (layerbarToggle == 0) {
-        document.getElementById("topbar").style.width =
-          window.innerWidth * 0.8 + "px";
-      } else {
-        document.getElementById("topbar").style.width =
-          window.innerWidth + "px";
-      }
+
     } else if (id === "layerbar") {
       layerbarToggle = 1;
       sidebar.style.transform = "translateX(100%)";
       document.getElementById("toggle-layerbar-btn").style.right = "0";
       document.getElementById("layerbarArrow").style.transform = "rotate(0deg)";
       if (toolbarToggle == 0) {
-        document.getElementById("topbar").style.width =
-          window.innerWidth * 0.95 + "px";
-      } else {
-        document.getElementById("topbar").style.width =
-          window.innerWidth + "px";
-      }
-    }
+    }}
   } else {
     sidebar.style.transform = "translateX(0)";
     if (id === "toolbar") {
@@ -982,6 +969,8 @@ function handleTouchStart(ev) {
   const target = document.elementFromPoint(pt.x, pt.y);
   if (_isCanvasTarget(target)) {
     ev.preventDefault();
+    mouseX = pt.x;
+    mouseY = pt.y;
     onMouseDown({ which: 1, button: 0, x: pt.x, y: pt.y });
   }
 }
